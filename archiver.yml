@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description:
+  This script create the resources for the Lambda function deployment
+Parameters:
+  InvoiceBucketName:
+    Type: String
+    Description: Bucket name where the invoices will be stored
+  EnvType:
+    Type: String
+    Description: Environment Type
+    Default: prod
+    AllowedValues:
+    - prod
+    - test
+    ConstraintDescription: You must specify prod or test
+Conditions:
+  IsProdEnv: !Equals [!Ref EnvType, prod]
+Resources:
+  InvoiceBucket:
+    Type: AWS::S3::Bucket
+    Condition: IsProdEnv
+    Properties:
+      BucketName: !Ref InvoiceBucketName
+  InvoiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: 
+            - lambda.amazonaws.com
+            - events.amazonaws.com
+          Action: "sts:AssumeRole"
+      Policies:
+      - PolicyName: root
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Effect: Allow
+            Action:
+            - "logs:*"
+            Resource: "arn:aws:logs:*:*:*"
+          - Effect: Allow
+            Action:
+            - "lambda:InvokeFunction"
+            Resource: "*"
+          - Effect: Allow
+            Action:
+            - "s3:*"
+            Resource: "*"
+          - Effect: Allow
+            Action:
+            - "kms:Decrypt"
+            Resource: "*"
+      Path: /
+      RoleName: InvoiceArchiverRole
+Outputs:
+  InvoiceRoleArn:
+    Value: !GetAtt InvoiceRole.Arn
+    Description: Arn of Zappa Role
+  

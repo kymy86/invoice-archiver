@@ -1,0 +1,10 @@
+[
+    {
+        "ParameterKey": "InvoiceBucketName",
+        "ParameterValue": "my-bucket-name"
+    },
+    {
+        "ParameterKey": "EnvType",
+        "ParameterValue": "test"
+    }
+]

@@ -1,0 +1,28 @@
+---
+production:
+  runtime: python3.6
+  debug: true
+  keep_warm: false
+  log_level: DEBUG
+  apigateway_enabled: false
+  project_name: invoice_archiver
+  lambda_description: Search the emails that contain an invoice and archive them on S3
+  timeout_seconds: 180
+  memory_size: 128
+  use_precompiled_packages: true
+  exclude:
+  - .vscode
+  - README.md
+  - venv
+  - LICENSE
+  - .gitignore
+  - .git
+  - archiver.yml
+  - parameters.json
+  - __pycache__
+  lambda_handler: main.lambda_handler
+  manage_roles: false
+  role_name: InvoiceArchiverRole
+  events:
+  - function: main.lambda_handler
+    expression: "cron(0 1 ? * MON-SUN *)"
