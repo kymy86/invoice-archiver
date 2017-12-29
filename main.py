@@ -21,14 +21,13 @@ def lambda_handler(event, context):
     emails = mailer.fetch_all()
     if len(emails) == 0:
         print("No emails available for processing")
-        exit()
+        return 1
 
     for email in emails:
-        print("Retrieve emails from mailbox")
         path, to = mailer.download_attachment(email)
         company = __get_company(to)
         print('Uploading invoice {} for company {}'.format(path, company))
-        bmaker = BucketMaker(company, 'test-invoices', 'eu-west-1')
+        bmaker = BucketMaker(company, 'gruppogioca-invoices', 'eu-west-1')
         bmaker.archive(path)
     print("Remove all the emails")
     mailer.remove_all()
@@ -52,8 +51,14 @@ def __get_company(to):
     the to email address
     """
 
-    if 'test' in to:
-        return "test"
+    if 'mindtek' in to:
+        return 'MindTek'
+    elif 'nearit' in to:
+        return 'NearIT'
+    elif 'beprime' in to:
+        return 'Beprime'
+    elif 'gioca' in to:
+        return 'Gioca'
     else:
         return 'unknown'
 

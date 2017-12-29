@@ -20,6 +20,7 @@ production:
   - archiver.yml
   - parameters.json
   - __pycache__
+  - .DS_Store
   lambda_handler: main.lambda_handler
   manage_roles: false
   role_name: InvoiceArchiverRole
