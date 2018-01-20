@@ -16,6 +16,32 @@ Parameters:
 Conditions:
   IsProdEnv: !Equals [!Ref EnvType, prod]
 Resources:
+  InvoiceSenderTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: sender
+          AttributeType: S
+      KeySchema:
+        - AttributeName: sender
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: "2"
+        WriteCapacityUnits: "2"
+      TableName: WhitelistSender
+  CompanyNameTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: "2"
+        WriteCapacityUnits: "2"
+      TableName: Company
   InvoiceBucket:
     Type: AWS::S3::Bucket
     Condition: IsProdEnv
@@ -23,6 +49,7 @@ Resources:
       BucketName: !Ref InvoiceBucketName
   InvoiceRole:
     Type: AWS::IAM::Role
+    DependsOn: "InvoiceSenderTable"
     Properties:
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
@@ -54,10 +81,25 @@ Resources:
             Action:
             - "kms:Decrypt"
             Resource: "*"
+          - Effect: Allow
+            Action:
+            - "dynamodb:DescribeTable"
+            - "dynamodb:BatchGetItem"
+            - "dynamodb:DescribeTable"
+            - "dynamodb:GetItem"
+            - "dynamodb:ListTables"
+            - "dynamodb:Query"
+            - "dynamodb:Scan"
+            - "dynamodb:DescribeReservedCapacity"
+            - "dynamodb:DescribeReservedCapacityOfferings"
+            - "dynamodb:ListTagsOfResource"
+            - "dynamodb:DescribeTimeToLive"
+            - "dynamodb:DescribeLimits"
+            Resource: "*"
       Path: /
       RoleName: InvoiceArchiverRole
 Outputs:
   InvoiceRoleArn:
     Value: !GetAtt InvoiceRole.Arn
-    Description: Arn of Zappa Role
+    Description: Arn for Zappa Role
   

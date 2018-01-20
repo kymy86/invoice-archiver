@@ -55,7 +55,7 @@ class BucketMaker:
 
     def archive(self, file):
         """
-        Creates the bucket if it doesn't exist 
+        Creates the bucket if it doesn't exist
         and uplads the file.
         """
         if not self.__bucket_exists():
