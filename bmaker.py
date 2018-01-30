@@ -1,23 +1,30 @@
+"""
+N.B. This class is related to the first version of this lambda function,
+where the attachments were saved on a S3 bucket. 
+In the current version, this is not used anymore.
+"""
+
 import os
 import mimetypes
 import re
-import datetime
 import boto3
 from botocore import exceptions
+import datetime
 
-class BucketMaker:
+class BucketMaker():
 
     def __init__(self, company_name, bucket_name, bucket_region):
-        self.__client = boto3.client('s3')
         self.__folder_name = self.__get_folder_name(company_name)
+        self.__client = boto3.client('s3')
         self.__bucket_name = bucket_name
         self.__bucket_region = bucket_region
+    
 
     def __get_folder_name(self, company_name):
         """
         Return the folder name
         """
-        return company_name.lower()+"/"+str(datetime.datetime.now().year)+"/"+datetime.datetime.now().strftime("%B")+"/"
+        return company_name.lower().title()+"/"+str(datetime.datetime.now().year)+"/"+datetime.datetime.now().strftime("%B")+"/"
 
     def __bucket_exists(self):
         """

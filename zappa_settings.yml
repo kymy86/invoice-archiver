@@ -6,8 +6,8 @@ production:
   log_level: DEBUG
   apigateway_enabled: false
   project_name: invoice_archiver
-  lambda_description: Search the emails that contain an invoice and archive them on S3
-  timeout_seconds: 180
+  lambda_description: Search the emails that contain an invoice and archive them on Google Drive
+  timeout_seconds: 240
   memory_size: 128
   use_precompiled_packages: true
   exclude:
